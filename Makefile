@@ -11,7 +11,7 @@ default:
 	@echo "Done."
 
 clean:
-	rm -f kernel.o kernel.bin
+	rm -f kasm.o kernel.bin kc.o kernel
 	@echo "Cleaned up."
 
 run:
