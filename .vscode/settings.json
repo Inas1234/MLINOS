@@ -1,6 +1,9 @@
 {
   "files.associations": {
     "*.embeddedhtml": "html",
-    "kernel.h": "c"
+    "kernel.h": "c",
+    "stdio.h": "c",
+    "__locale": "c",
+    "ios": "c"
   }
 }
