@@ -35,3 +35,15 @@ int bitmap_find(byte *bitmap, int size, Bool value, int start){
     }
     return BITMAP_NOT_FOUND;
 }
+
+int bitmap_count(byte *bitmap, int size, Bool value){
+    int i, count = 0;
+    for (i = 0, size *= BIT; i < size; i++)
+    {
+        if (bitmap_get(bitmap, i) == value)
+        {
+            count++;
+        }
+    }
+    return count;
+}

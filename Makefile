@@ -14,17 +14,14 @@ default: $(OUTPUT_DIR)/kasm.o $(ALL_O_FILES)
 	i686-elf-ld -T $(LINKER_LOCATION) -o $(OUTPUT_DIR)/kernel $(OUTPUT_DIR)/kasm.o $(ALL_O_FILES)
 	@echo "Done."
 
-# Rule for compiling the kernel assembly file to an object file
 $(OUTPUT_DIR)/kasm.o: $(ASM_KERNEL_LOCATION)
 	@echo "Compiling kernel assembly..."
 	nasm -f elf32 $< -o $@
 
-# Generic rule for compiling C files from stdlib to object files
 $(OUTPUT_DIR)/%.o: ./stdlib/%.c
 	@echo "Compiling $<..."
 	i686-elf-gcc -c $< -o $@ -ffreestanding -nostdlib -nostartfiles -nodefaultlibs
 
-# Generic rule for compiling C files from src to object files
 $(OUTPUT_DIR)/%.o: ./src/%.c
 	@echo "Compiling $<..."
 	i686-elf-gcc -c $< -o $@ -ffreestanding -nostdlib -nostartfiles -nodefaultlibs

@@ -1,5 +1,5 @@
 #include "./stdio.h"
-
+#include "./stdarg.h"
 void clear_screen()
 {
 	char *vidmem = (char *) VGA_ADDRESS;
@@ -14,7 +14,7 @@ void clear_screen()
 	current_line = 0;
 };
 
-unsigned int print_string(char *message) {
+unsigned int print_string(const char *message) {
     char *vidmem = (char *) VGA_ADDRESS;
     unsigned int i = current_line * VGA_WIDTH * 2;
 
@@ -29,7 +29,7 @@ unsigned int print_string(char *message) {
         }
     }
 
-    current_line++; // Move to the next line for subsequent prints
+    current_line++; 
     return 1;
 }
 
@@ -50,4 +50,68 @@ void print_hex(unsigned int value){
     int_to_hex(value, buffer);
 
     print_string(buffer);
+}
+
+unsigned int kprintf(const char *fmt, ...){
+    va_list args;
+    va_start(args, fmt);
+    while (*fmt != '\0') {
+        if (*fmt == '%') {
+            fmt++;
+            if (*fmt == 'x') {
+                unsigned int value = va_arg(args, unsigned int);
+                print_hex(value);
+            }
+            if (*fmt == 'd') {
+                unsigned int value = va_arg(args, unsigned int);
+                print_int(value);
+            }
+            if (*fmt == 's') {
+                const char *value = va_arg(args, const char *);
+                print_string(value);
+            }
+        } else {
+            put_char(*fmt);
+        }
+        fmt++;
+    }
+}
+void put_char(char c) {
+    if (c == '\n') {
+        current_line++;
+        return;
+    }
+    
+    char *vidmem = (char *) VGA_ADDRESS;
+    
+    unsigned int offset = current_line * VGA_WIDTH * 2;
+    
+    while (vidmem[offset] != 0 && (offset < (VGA_WIDTH * VGA_HEIGHT * 2))) {
+        offset += 2;
+    }
+    
+    if ((offset - (current_line * VGA_WIDTH * 2)) >= (VGA_WIDTH * 2)) {
+        current_line++;
+        offset = current_line * VGA_WIDTH * 2;  
+    }
+    
+    vidmem[offset] = c;
+    vidmem[offset + 1] = WHITE_TXT;
+}
+
+void print_int(unsigned int value) {
+    char buffer[10];
+    int i = 0;
+    while (value > 0) {
+        buffer[i++] = (value % 10) + '0';
+        value /= 10;
+    }
+    buffer[i] = '\0';
+    char reversed[10];
+    int j = 0;
+    while (i > 0) {
+        reversed[j++] = buffer[--i];
+    }
+    reversed[j] = '\0';
+    print_string(reversed);
 }

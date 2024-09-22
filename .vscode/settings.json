@@ -4,6 +4,8 @@
     "kernel.h": "c",
     "stdio.h": "c",
     "__locale": "c",
-    "ios": "c"
-  }
+    "ios": "c",
+    "stdarg.h": "c"
+  },
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }

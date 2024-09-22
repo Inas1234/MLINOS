@@ -25,3 +25,7 @@ void pmm_free(void *p){
     int i = (int)p / PMM_BLOCK_SIZE;
     bitmap_clear(pmm_bitmap, i);
 }
+
+unsigned int pmm_free_blocks_count(){
+    return bitmap_count(pmm_bitmap, TOTAL_PMM_BLOCKS / BIT, False);
+}

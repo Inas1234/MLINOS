@@ -6,3 +6,4 @@
 void pmm_init();
 void *pmm_alloc();
 void pmm_free(void *block);
+unsigned int pmm_free_blocks_count();
