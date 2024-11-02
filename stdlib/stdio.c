@@ -1,5 +1,6 @@
 #include "./stdio.h"
 #include "./stdarg.h"
+
 void clear_screen()
 {
 	char *vidmem = (char *) VGA_ADDRESS;
@@ -15,23 +16,12 @@ void clear_screen()
 };
 
 unsigned int print_string(const char *message) {
-    char *vidmem = (char *) VGA_ADDRESS;
-    unsigned int i = current_line * VGA_WIDTH * 2;
-
-    while (*message != 0) {
-        if (*message == '\n') {
-            current_line++;
-            i = current_line * VGA_WIDTH * 2;
-            message++;
-        } else {
-            vidmem[i++] = *message++;
-            vidmem[i++] = WHITE_TXT;
-        }
+    while (*message != '\0') {
+        put_char(*message++);
     }
-
-    current_line++; 
     return 1;
 }
+
 
 void int_to_hex(unsigned int n, char *dest) {
     int i, j = 0;
@@ -79,25 +69,24 @@ unsigned int kprintf(const char *fmt, ...){
 void put_char(char c) {
     if (c == '\n') {
         current_line++;
+        current_column = 0;
         return;
     }
-    
+
     char *vidmem = (char *) VGA_ADDRESS;
-    
-    unsigned int offset = current_line * VGA_WIDTH * 2;
-    
-    while (vidmem[offset] != 0 && (offset < (VGA_WIDTH * VGA_HEIGHT * 2))) {
-        offset += 2;
-    }
-    
-    if ((offset - (current_line * VGA_WIDTH * 2)) >= (VGA_WIDTH * 2)) {
-        current_line++;
-        offset = current_line * VGA_WIDTH * 2;  
-    }
-    
+    unsigned int offset = (current_line * VGA_WIDTH + current_column) * 2;
+
     vidmem[offset] = c;
     vidmem[offset + 1] = WHITE_TXT;
+
+    current_column++;
+
+    if (current_column >= VGA_WIDTH) {
+        current_column = 0;
+        current_line++;
+    }
 }
+
 
 void print_int(unsigned int value) {
     char buffer[10];
@@ -114,4 +103,21 @@ void print_int(unsigned int value) {
     }
     reversed[j] = '\0';
     print_string(reversed);
+}
+
+void *memset(void *dest, int val, unsigned int len) {
+    unsigned char *ptr = dest;
+    while (len-- > 0) {
+        *ptr++ = (unsigned char)val;
+    }
+    return dest;
+}
+
+void *memcpy(void *dest, const void *src, unsigned int len) {
+    unsigned char *d = dest;
+    const unsigned char *s = src;
+    while (len-- > 0) {
+        *d++ = *s++;
+    }
+    return dest;
 }

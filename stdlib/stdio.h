@@ -7,6 +7,7 @@
 #define NULL 0
 
 static unsigned int current_line = 0;
+static unsigned int current_column = 0;
 
 void clear_screen();
 unsigned int print_string(const char *message);
@@ -15,3 +16,5 @@ void print_hex(unsigned int value);
 unsigned int kprintf(const char *fmt, ...);
 void print_int(unsigned int value);
 void put_char(char c);
+void *memset(void *dest, int val, unsigned int len);
+void *memcpy(void *dest, const void *src, unsigned int len);

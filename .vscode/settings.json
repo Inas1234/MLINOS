@@ -5,7 +5,9 @@
     "stdio.h": "c",
     "__locale": "c",
     "ios": "c",
-    "stdarg.h": "c"
+    "stdarg.h": "c",
+    "cstring": "c",
+    "*.inc": "c"
   },
   "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }

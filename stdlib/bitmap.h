@@ -13,5 +13,6 @@ Bool bitmap_get(byte *bitmap, int bit);
 void bitmap_set(byte *bitmap, int bit);
 void bitmap_clear(byte *bitmap, int bit);
 int bitmap_find(byte *bitmap, int size, Bool value, int start);
+int bitmap_find_free(byte *bitmap, int size);
 
 int bitmap_count(byte *bitmap, int size, Bool value);
