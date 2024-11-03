@@ -121,3 +121,45 @@ void *memcpy(void *dest, const void *src, unsigned int len) {
     }
     return dest;
 }
+
+
+void outb(short port, char byte)
+{
+    asm("mov %1, %%al;"
+        "mov %0, %%dx;"
+        "out %%al, %%dx"
+        : : "r" (port), "r" (byte)
+        : "eax", "edx");
+}
+
+void outw(short port, short word)
+{
+    asm("mov %1, %%ax;"
+        "mov %0, %%dx;"
+        "out %%ax, %%dx"
+        : : "r" (port), "r" (word)
+        : "eax", "edx");
+}
+
+void outd(short port, int dword)
+{
+    asm("mov %1, %%eax;"
+        "mov %0, %%dx;"
+        "out %%eax, %%dx"
+        : : "r" (port), "r" (dword)
+        : "eax", "edx");
+}
+
+char inb(short port)
+{
+    char res;
+
+    asm("mov %1, %%dx;"
+        "in %%dx, %%al;"
+        "mov %%al, %0"
+        : "=r" (res)
+        : "r" (port)
+        : "eax", "edx");
+
+    return res;
+}

@@ -1,4 +1,7 @@
 #pragma once
+
+#include "stdtypes.h"
+
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
@@ -18,3 +21,6 @@ void print_int(unsigned int value);
 void put_char(char c);
 void *memset(void *dest, int val, unsigned int len);
 void *memcpy(void *dest, const void *src, unsigned int len);
+void outb(short port, char byte);
+void outw(short port, short word);
+void outd(short port, int dword);

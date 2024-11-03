@@ -2,7 +2,7 @@
 #include "pmm.h"
 #include "paging.h"
 #include "descriptorTables.h"
-
+#include "irq.h"
 
 
 void kernel_main() 
@@ -13,17 +13,22 @@ void kernel_main()
 		kprintf("Error: No free blocks available.");
 		return;
 	}
-	print_string("Initializing Physical Memory Manager...\n");
-	kprintf("Free blocks: %d\n", pmm_free_blocks_count() * PMM_BLOCK_SIZE / 1024);
+	print_string("Initializing Physical Memory Manager: OK\n");
 
 	init_gdt();
-	kprintf("GDT installed\n");
+	kprintf("GDT: OK\n");
 
 	init_idt();
-	kprintf("IDT installed\n");
+	kprintf("IDT: OK\n");
+
+	remap_irq();
+	kprintf("IRQs remapping: OK\n");
+
+	init_timer(20);
+	kprintf("Timer (20 Hz): OK\n");
 
 	initialize_paging();
-	kprintf("Paging initialized.\n");
+	kprintf("Initializing paging: OK.\n");
 
 	
 	kprintf("Welcome to MlinOS.\n");

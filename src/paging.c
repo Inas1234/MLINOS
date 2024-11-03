@@ -16,7 +16,6 @@ void print_page_directory(page_directory_t *dir) {
 
 
 void initialize_paging() {
-    print_string("Allocating page directory...\n");
     kernel_directory = (page_directory_t *)pmm_alloc();
     if (!kernel_directory) {
         print_string("Failed to allocate kernel directory!\n");
@@ -28,7 +27,6 @@ void initialize_paging() {
     memset(kernel_directory, 0, sizeof(page_directory_t));
 
 
-    print_string("Mapping page tables...\n");
     int num_tables = IDENTITY_MAP_LIMIT / (PMM_BLOCK_SIZE * 1024);
 
     for (int i = 0; i < num_tables; i++) {
@@ -58,12 +56,9 @@ void initialize_paging() {
         }
     }
 
-    print_string("Loading page directory...\n");
     load_page_directory(kernel_directory);
 
-    print_string("Enabling paging...\n");
     enable_paging();
-    print_string("Paging enabled.\n");
 }
 
 void load_page_directory(page_directory_t *dir) {
