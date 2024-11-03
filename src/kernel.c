@@ -1,26 +1,30 @@
 #include "../stdlib/stdio.h"
 #include "pmm.h"
 #include "paging.h"
-#include "isr.h"
-#include "idt.h"
+#include "descriptorTables.h"
+
+
 
 void kernel_main() 
 {
 	clear_screen();
 	pmm_init();
 	if (pmm_free_blocks_count() == 0) {
-		print_string("Error: No free blocks available.");
+		kprintf("Error: No free blocks available.");
 		return;
 	}
 	print_string("Initializing Physical Memory Manager...\n");
 	kprintf("Free blocks: %d\n", pmm_free_blocks_count() * PMM_BLOCK_SIZE / 1024);
-		
-	// idt_install();
-	// isr_install();
-	// asm volatile("sti");
+
+	init_gdt();
+	kprintf("GDT installed\n");
+
+	init_idt();
+	kprintf("IDT installed\n");
 
 	initialize_paging();
 	kprintf("Paging initialized.\n");
+
 	
-	print_string("Welcome to MlinOS.");
+	kprintf("Welcome to MlinOS.\n");
 };

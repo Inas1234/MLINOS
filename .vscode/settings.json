@@ -7,7 +7,8 @@
     "ios": "c",
     "stdarg.h": "c",
     "cstring": "c",
-    "*.inc": "c"
+    "*.inc": "c",
+    "gtd.h": "c"
   },
   "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }

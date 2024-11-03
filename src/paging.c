@@ -5,15 +5,28 @@
 page_directory_t *kernel_directory;
 page_directory_t *current_directory;
 
+void print_page_directory(page_directory_t *dir) {
+    for (int i = 0; i < 1024; i++) {
+        if (dir->entries[i].present) {  // Only print present entries
+            unsigned int table_addr = dir->entries[i].table_addr << 12;
+            kprintf("Entry %d: Table at 0x%x, RW=%d, User=%d\n", i, table_addr, dir->entries[i].rw, dir->entries[i].user);
+        }
+    }
+}
+
+
 void initialize_paging() {
     print_string("Allocating page directory...\n");
     kernel_directory = (page_directory_t *)pmm_alloc();
     if (!kernel_directory) {
         print_string("Failed to allocate kernel directory!\n");
         return;
+    } else {
+        kprintf("Allocated kernel_directory at: 0x%x\n", (unsigned int)kernel_directory);
     }
 
     memset(kernel_directory, 0, sizeof(page_directory_t));
+
 
     print_string("Mapping page tables...\n");
     int num_tables = IDENTITY_MAP_LIMIT / (PMM_BLOCK_SIZE * 1024);
@@ -25,6 +38,11 @@ void initialize_paging() {
             return;
         }
         memset(table, 0, sizeof(page_table_t));
+
+        if (((unsigned int)table & 0xFFF) != 0) {
+            kprintf("Error: Page table %d is not 4KB aligned!\n", i);
+            return;
+        }
 
         kernel_directory->entries[i].present = 1;
         kernel_directory->entries[i].rw = 1;
