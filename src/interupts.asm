@@ -102,21 +102,21 @@ isr0x21:
     sti
 iret 
 
-[GLOBAL isr0x8] ;double fault
-isr0x8: 
+[GLOBAL isr0x8]
+isr0x8:
     cli
     pusha
     mov ax, ds
     push eax
-    mov ax, 0x10 ;data segment
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov gs, ax
     mov fs, ax
     mov ss, ax
-    
+
     call int0x8_handler
-    
+
     pop eax
     mov ds, ax
     mov es, ax
@@ -124,22 +124,23 @@ isr0x8:
     mov gs, ax
     mov ss, ax
     popa
+    add esp, 4      ; drop CPU-pushed error code
     sti
-iret 
+    iret
 
-[GLOBAL isr0xB] ;segment not present, pushes error code
-isr0xB: 
+[GLOBAL isr0xB]
+isr0xB:
     cli
     pusha
-    mov ax, 0x10 ;data segment
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov gs, ax
     mov fs, ax
     mov ss, ax
-    
+
     call int0xB_handler
-    
+
     mov ax, 0x10
     mov ds, ax
     mov es, ax
@@ -147,24 +148,25 @@ isr0xB:
     mov gs, ax
     mov ss, ax
     popa
+    add esp, 4      ; drop CPU-pushed error code
     sti
-iret 
+    iret
 
-[GLOBAL isr0xC] ;stack fault
-isr0xC: 
+[GLOBAL isr0xC]
+isr0xC:
     cli
     pusha
     mov ax, ds
     push eax
-    mov ax, 0x10 ;data segment
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov gs, ax
     mov fs, ax
     mov ss, ax
-    
+
     call int0xC_handler
-    
+
     pop eax
     mov ds, ax
     mov es, ax
@@ -172,24 +174,26 @@ isr0xC:
     mov gs, ax
     mov ss, ax
     popa
+    add esp, 4      ; drop CPU-pushed error code
     sti
-iret 
+    iret
 
-[GLOBAL isr0xD] ;general protection fault
-isr0xD: 
+
+[GLOBAL isr0xD]
+isr0xD:
     cli
     pusha
     mov ax, ds
     push eax
-    mov ax, 0x10 ;data segment
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov gs, ax
     mov fs, ax
     mov ss, ax
-    
+
     call int0xD_handler
-    
+
     pop eax
     mov ds, ax
     mov es, ax
@@ -197,28 +201,29 @@ isr0xD:
     mov gs, ax
     mov ss, ax
     popa
+    add esp, 4      ; drop CPU-pushed error code
     sti
-iret 
+    iret
 
-[GLOBAL isr0xE] ;page fault, pushes error code
-isr0xE: 
+
+[GLOBAL isr0xE]
+isr0xE:
     cli
-    mov ebp, esp
     pusha
     mov ax, ds
     push eax
-    mov ax, 0x10 ;data segment
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov gs, ax
     mov fs, ax
     mov ss, ax
-    
+
     mov eax, cr2
-    push eax
+    push eax                 ; arg for handler
     call int0xE_handler
-    
-    
+    add esp, 4               ; drop pushed CR2 argument
+
     pop eax
     mov ds, ax
     mov es, ax
@@ -226,9 +231,11 @@ isr0xE:
     mov gs, ax
     mov ss, ax
     popa
+    add esp, 4               ; drop CPU-pushed error code
     sti
-iret 
+    iret
 
+    
 [GLOBAL isr0xF] ;unknown interrupt
 isr0xF: 
     cli

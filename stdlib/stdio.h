@@ -24,3 +24,5 @@ void *memcpy(void *dest, const void *src, unsigned int len);
 void outb(short port, char byte);
 void outw(short port, short word);
 void outd(short port, int dword);
+char inb(short port);
+
