@@ -143,16 +143,17 @@ void int0x20_handler(IntRegisters regs)
 void int0x21_handler(IntRegisters regs) {
     unsigned char scancode = inb(0x60);
 
-    if (!(scancode & 0x80)) {
-        char ascii = get_ascii_from_scancode(scancode);
-        if (ascii) {
-            keyboard_buffer_add(ascii);
+    if (!(scancode & 0x80)) {              // key press only
+        if (scancode == 0x0E) {            // Backspace scancode
+            keyboard_buffer_add('\b');
+        } else {
+            char ascii = get_ascii_from_scancode(scancode);
+            if (ascii) keyboard_buffer_add(ascii);
         }
     }
 
-    outb(0x20, 0x20);
+    outb(0x20, 0x20);                       // EOI
 }
-
 void int0x8_handler()
 {
 

@@ -7,8 +7,10 @@
 #include "terminal.h"
 #include "io.h"
 
-extern volatile unsigned int pit_ticks; // incremented in int0x20_handler
-void test_paging(void);                 // from paging.c
+
+extern unsigned int current_column;   
+extern volatile unsigned int pit_ticks; 
+void test_paging(void);                 
 
 static void test_gdt(void) {
     GDTDescriptor gdtr;
@@ -48,6 +50,25 @@ static void test_timer_ticks(unsigned int min_ticks) {
     else                     kprintf("PIT test: no ticks observed (check int0x20_handler/EOI). FAIL\n");
 }
 
+
+static void print_terminal() {
+    terminal_write("\n> ");
+    unsigned int guard_pos = terminal_cursor_pos();  // protect "> "
+
+    while (1) {
+        char ch = keyboard_get_char();
+        if (ch == '\0') continue;
+
+        if (ch == '\n') {
+            terminal_write("\n> ");
+            guard_pos = terminal_cursor_pos();       // reset guard after new prompt
+        } else if (ch == '\b' || (unsigned char)ch == 127) {
+            terminal_backspace(guard_pos);           // never crosses the prompt
+        } else {
+            terminal_putchar(ch);
+        }
+    }
+}
 void kernel_main() 
 {
     clear_screen();
@@ -73,30 +94,16 @@ void kernel_main()
     initialize_paging();
     kprintf("Initializing paging: OK.\n");
 
-    // // --- Self-tests before enabling interrupts ---
     // test_gdt();
     // test_idt();
     // test_irq_pic_masks();
     // test_paging();
 
-    // --- Enable devices and interrupts ---
     init_keyboard();
     init_terminal();
     asm volatile("sti");
     kprintf("Welcome to MlinOS.\n");
 
-    // // With interrupts enabled, verify PIT ticks occur
     // test_timer_ticks(5);
-
-    kprintf("> ");
-    while (1) {
-        char ch = keyboard_get_char();  // Retrieve character from buffer
-        if (ch != '\0') {
-            if (ch == '\n') {
-                terminal_write("\n> ");  // Print new prompt on Enter key
-            } else {
-                terminal_putchar(ch);    // Print the character
-            }
-        }
-    }
+	print_terminal();
 }

@@ -2,10 +2,6 @@
 #include "io.h"
 #include "../stdlib/stdio.h"
 
-char keyboard_buffer[KEYBOARD_BUFFER_SIZE];
-int buffer_index = 0;
-int read_index = 0;  // Track the position to read from the buffer
-
 
 const char scancode_to_ascii[] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
