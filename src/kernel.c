@@ -6,6 +6,7 @@
 #include "keyboard.h"
 #include "terminal.h"
 #include "io.h"
+#include "serial.h"
 
 
 extern unsigned int current_column;   
@@ -71,6 +72,8 @@ static void print_terminal() {
 }
 void kernel_main() 
 {
+    serial_init();
+    serial_write("[serial] booting...\n");
     clear_screen();
     pmm_init();
     if (pmm_free_blocks_count() == 0) {

@@ -63,7 +63,7 @@ extern void int0x8_handler();
 extern void int0xB_handler(IntWithErrorRegisters regs);
 extern void int0xC_handler();
 extern void int0xD_handler();
-extern void int0xE_handler(unsigned int faultingAddr);
+extern void int0xE_handler(unsigned int fault_addr, unsigned int err);
 extern void int0xF_handler();
 
 

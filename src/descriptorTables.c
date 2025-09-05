@@ -177,12 +177,22 @@ void int0xD_handler()
     kprintf("#----Error---- General protection fault:  pid=0x\n");
 }
 
-void int0xE_handler(unsigned int faultingAddr)
+void int0xE_handler(unsigned int fault_addr, unsigned int err)
 {
+    // err bits: 0=P (1=protection, 0=not-present), 1=WR (1=write), 2=US (1=user),
+    // 3=RSVD (reserved bit violation), 4=ID (instruction fetch)
+    int present =  (err & 1) != 0;
+    int write   =  (err & 2) != 0;
+    int user    =  (err & 4) != 0;
+    int rsvd    =  (err & 8) != 0;
+    int ifetch  =  (err & 16)!= 0;
 
-    kprintf("#----Error---- Page fault: 0x%x : pid=0x\n", faultingAddr);
+    kprintf("# Page Fault @ 0x%x  err=0x%x  [present=%d write=%d user=%d rsvd=%d ifetch=%d]\n",
+            fault_addr, err, present, write, user, rsvd, ifetch);
+
+    // Optional: panic for now
+    // panic("Unhandled page fault");
 }
-
 void int0xF_handler()
 {
     kprintf("#----Error---- Unknown interrupt:  pid=0x\n");

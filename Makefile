@@ -57,4 +57,4 @@ clean:
 
 # Run target
 run:
-	qemu-system-i386 -kernel $(OUTPUT_DIR)/kernel
+	qemu-system-i386 -serial stdio -kernel $(OUTPUT_DIR)/kernel

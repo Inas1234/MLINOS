@@ -206,23 +206,28 @@ isr0xD:
     iret
 
 
-[GLOBAL isr0xE]
+[GLOBAL isr0xE] 
 isr0xE:
     cli
     pusha
+
     mov ax, ds
     push eax
     mov ax, 0x10
     mov ds, ax
     mov es, ax
-    mov gs, ax
     mov fs, ax
+    mov gs, ax
     mov ss, ax
 
     mov eax, cr2
-    push eax                 ; arg for handler
+    push eax                       
+
+    mov eax, [esp + 40]
+    push eax                       
+
     call int0xE_handler
-    add esp, 4               ; drop pushed CR2 argument
+    add esp, 8                     
 
     pop eax
     mov ds, ax
@@ -230,11 +235,11 @@ isr0xE:
     mov fs, ax
     mov gs, ax
     mov ss, ax
+
     popa
-    add esp, 4               ; drop CPU-pushed error code
+    add esp, 4                     
     sti
     iret
-
     
 [GLOBAL isr0xF] ;unknown interrupt
 isr0xF: 
