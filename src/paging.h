@@ -1,5 +1,4 @@
-// Page table entry structure
-// Page table entry structure
+#pragma once
 typedef struct {
     unsigned int present    : 1;   // Page present in memory
     unsigned int rw         : 1;   // Read-only if clear, read/write if set

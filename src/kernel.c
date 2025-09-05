@@ -7,7 +7,7 @@
 #include "terminal.h"
 #include "io.h"
 #include "serial.h"
-
+#include "kheap.h"
 
 extern unsigned int current_column;   
 extern volatile unsigned int pit_ticks; 
@@ -97,16 +97,20 @@ void kernel_main()
     initialize_paging();
     kprintf("Initializing paging: OK.\n");
 
+    kheap_init();
+    kprintf("Kernel heap: OK\n");
+
+    
     // test_gdt();
     // test_idt();
     // test_irq_pic_masks();
     // test_paging();
 
-    init_keyboard();
-    init_terminal();
-    asm volatile("sti");
-    kprintf("Welcome to MlinOS.\n");
+    // init_keyboard();
+    // init_terminal();
+    // asm volatile("sti");
+    // kprintf("Welcome to MlinOS.\n");
 
-    // test_timer_ticks(5);
-	print_terminal();
+    // // test_timer_ticks(5);
+	// print_terminal();
 }
